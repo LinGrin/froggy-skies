@@ -7,7 +7,11 @@ type FileType = 'background' | 'icon'
 /** Pick best image for the provided weather type */
 async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): Promise<string> {
   const isWarm = feelsLikeTemp >= MIN_WARM_TEMP;
-  const cacheKey = `${isWarm}-${weatherType.main}-${weatherType.icon}`;
+
+  // tbd for how to handle warmth later, phone frog pics don't
+  // have temperature specific versions it seems
+  const warmString = isWarm ? 'warm' : 'cold';
+  const cacheKey = `${warmString}-${weatherType.main}-${weatherType.icon}`;
   const cached = await getImageSelection(cacheKey);
   if (cached) {
     return cached;
@@ -85,7 +89,7 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     case '13d':
     case '13n':
       // weird case for freezing rain also having this icon
-      if (weatherType.code==511) {
+      if (weatherType.code===511 || weatherType.code===611) {
         prefix = 'wintry-mix';
         count = 2;
       } else {
@@ -112,7 +116,7 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
 
   // randomize image
   const index = Math.floor(Math.random() * (count - 1) + 1);
-  const warmString = isWarm ? 'warm' : 'cold';
+  
   const image = `${warmString}-${prefix}-${`${index}`.padStart(2, '0')}.jpg`;
 
   // cache and return
