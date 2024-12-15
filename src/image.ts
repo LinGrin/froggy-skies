@@ -36,28 +36,28 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     case '02d':
     case '03d':
       prefix = 'partly-cloud-day';
-      count = 11;
+      count = 8;
       break;
 
     //  partly cloudy night
     case '02n':
     case '03n':
       prefix = 'partly-cloud-night';
-      count = 6;
+      count = 3;
       break;
 
-    // overcast
+    // cloudy
     case '04d':
-      prefix = 'overcast-day';
-      count = 11;
+      prefix = 'cloud-day';
+      count = 3;
       break;
 
-    // overcast night
+    // cloudy night
     case '02n':
     case '03n':
     case '04n':
-      prefix = 'overcast-night';
-      count = 6;
+      prefix = 'cloud-night';
+      count = 3;
       break;
 
     // rain-day
@@ -71,14 +71,14 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     case '09n':
     case '10n':
       prefix = 'rain';
-      count = 5;
+      count = 6;
       break;
 
     // thunderstorm
     case '11d':
     case '11n':
       prefix = 'thunderstorm';
-      count = 4;
+      count = 1;
       break;
 
     // snow
@@ -86,8 +86,8 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     case '13n':
       // weird case for freezing rain also having this icon
       if (weatherType.code==511) {
-        prefix = 'rain';
-        count = 4;
+        prefix = 'wintry-mix';
+        count = 2;
       } else {
         prefix = 'snow';
         count = 4;
