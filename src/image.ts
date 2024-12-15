@@ -1,11 +1,13 @@
 import { getImageSelection, saveImageSelection } from './image-selection';
 import { WeatherType } from './models';
+import { MIN_WARM_TEMP, IMAGE_SOURCE_URL } from './constants'
 
 type FileType = 'background' | 'icon'
 
 /** Pick best image for the provided weather type */
-async function pickBestImage(weatherType: WeatherType): Promise<string> {
-  const cacheKey = `${weatherType.main}-${weatherType.icon}`;
+async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): Promise<string> {
+  const isWarm = feelsLikeTemp >= MIN_WARM_TEMP;
+  const cacheKey = `${isWarm}-${weatherType.main}-${weatherType.icon}`;
   const cached = await getImageSelection(cacheKey);
   if (cached) {
     return cached;
@@ -14,57 +16,82 @@ async function pickBestImage(weatherType: WeatherType): Promise<string> {
   let prefix = '';
   let count = 1;
 
+
+  // todo: enhance with codes instead of icon
   switch (weatherType.icon) {
 
-    // sunny
+    // clear day
     case '01d':
-      prefix = 'sun-day';
+      prefix = 'clear-day';
       count = 11;
       break;
 
-    // sunny night
+    // clear night
     case '01n':
-      prefix = 'sun-night';
+      prefix = 'clear-night';
       count = 7;
       break;
 
-    // cloudy
+    // partly cloudy
     case '02d':
     case '03d':
-    case '04d':
-      prefix = 'cloud-day';
+      prefix = 'partly-cloud-day';
       count = 11;
       break;
 
-    // cloudy night
+    //  partly cloudy night
     case '02n':
     case '03n':
-    case '04n':
-      prefix = 'cloud-night';
+      prefix = 'partly-cloud-night';
       count = 6;
       break;
 
-    // rain
+    // overcast
+    case '04d':
+      prefix = 'overcast-day';
+      count = 11;
+      break;
+
+    // overcast night
+    case '02n':
+    case '03n':
+    case '04n':
+      prefix = 'overcast-night';
+      count = 6;
+      break;
+
+    // rain-day
+    case '09d':
     case '10d':
+      prefix = 'rain';
+      count = 5;
+      break;
+
+    // rain-night
+    case '09n':
     case '10n':
       prefix = 'rain';
       count = 5;
       break;
 
-    // heavy rain
-    case '09d':
-    case '09n':
+    // thunderstorm
     case '11d':
     case '11n':
-      prefix = 'rain-heavy';
+      prefix = 'thunderstorm';
       count = 4;
       break;
 
     // snow
     case '13d':
     case '13n':
-      prefix = 'snow';
-      count = 4;
+      // weird case for freezing rain also having this icon
+      if (weatherType.code==511) {
+        prefix = 'rain';
+        count = 4;
+      } else {
+        prefix = 'snow';
+        count = 4;
+      }
       break;
 
     // mist
@@ -85,7 +112,8 @@ async function pickBestImage(weatherType: WeatherType): Promise<string> {
 
   // randomize image
   const index = Math.floor(Math.random() * (count - 1) + 1);
-  const image = `${prefix}-${`${index}`.padStart(2, '0')}.jpg`;
+  const warmString = isWarm ? 'warm' : 'cold';
+  const image = `${warmString}-${prefix}-${`${index}`.padStart(2, '0')}.jpg`;
 
   // cache and return
   saveImageSelection(cacheKey, image);
@@ -93,8 +121,8 @@ async function pickBestImage(weatherType: WeatherType): Promise<string> {
 }
 
 /** Download image from repository (or local icloud) */
-export async function getImage(weatherType: WeatherType, fileType: FileType, destinationFolder: string = 'weather'): Promise<Image> {
-  const filename = fileType === 'icon' ? `${weatherType.icon}.png` : await pickBestImage(weatherType);
+export async function getImage(weatherType: WeatherType, number: feelsLikeTemp, fileType: FileType, destinationFolder: string = 'weather'): Promise<Image> {
+  const filename = fileType === 'icon' ? `${weatherType.icon}.png` : await pickBestImage(weatherType, feelsLikeTemp);
 
   const iCloud = FileManager.iCloud();
   const destinationFolderPath = iCloud.joinPath(iCloud.documentsDirectory(), iCloud.joinPath(destinationFolder, fileType));
@@ -111,7 +139,7 @@ export async function getImage(weatherType: WeatherType, fileType: FileType, des
 
     // Images are downloaded from repo first time
     // Once they are downloaded, they will be read from personal icloud.
-    const url = `https://github.com/submarines-and/froggy-skies/raw/master/${fileType}/${filename}`;
+    const url = `${IMAGE_SOURCE_URL}/${fileType}/${filename}`;
     log(`Downloading image: ${filename}`);
 
     const request = new Request(url);

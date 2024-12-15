@@ -1,5 +1,5 @@
 import { get, set } from './cache';
-import { API_KEY } from './constants';
+import { API_KEY, UNIT } from './constants';
 import { getCurrentLocation } from './location';
 import { TEST_DATA, WeatherData } from './models';
 
@@ -13,7 +13,7 @@ export async function getWeatherData(): Promise<WeatherData> {
 
   // get weather based on current location
   const currentLocation = await getCurrentLocation();
-  const url = `http://api.openweathermap.org/data/2.5/weather?lat=${currentLocation.latitude}&lon=${currentLocation.longitude}&appid=${API_KEY}&units=metric`;
+  const url = `http://api.openweathermap.org/data/2.5/weather?lat=${currentLocation.latitude}&lon=${currentLocation.longitude}&appid=${API_KEY}&units=${UNIT}`;
 
   const request = new Request(url);
 
