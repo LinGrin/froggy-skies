@@ -35,7 +35,7 @@ const warmCounts = {
   };
 
 /** Pick best image for the provided weather type */
-async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): Promise<string> {
+async function pickBestImage(weatherType: WeatherType, feelsLikeTemp: number): Promise<string> {
   const isWarm = feelsLikeTemp >= MIN_WARM_TEMP;
 
   // tbd for how to handle warmth later, phone frog pics don't
@@ -141,7 +141,7 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
 }
 
 /** Download image from repository (or local icloud) */
-export async function getImage(weatherType: WeatherType, number: feelsLikeTemp, fileType: FileType, destinationFolder: string = 'weather'): Promise<Image> {
+export async function getImage(weatherType: WeatherType, feelsLikeTemp: number, fileType: FileType, destinationFolder: string = 'weather'): Promise<Image> {
   const filename = fileType === 'icon' ? `${weatherType.icon}.png` : await pickBestImage(weatherType, feelsLikeTemp);
 
   const iCloud = FileManager.iCloud();

@@ -10,7 +10,7 @@ import { getWeatherData } from './weather';
   console.log(weatherData.weather);
   const feelsLikeTemp = weatherData.main.feels_like;
   const backgroundImage = await getImage(weatherData.weather[0], feelsLikeTemp, 'background');
-  const iconImage = await getImage(weatherData.weather[0], 'icon');
+  const iconImage = await getImage(weatherData.weather[0], feelsLikeTemp, 'icon');
 
   // create widget + set background
   log('Creating widget...');
