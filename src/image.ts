@@ -2,7 +2,37 @@ import { getImageSelection, saveImageSelection } from './image-selection';
 import { WeatherType } from './models';
 import { MIN_WARM_TEMP, IMAGE_SOURCE_URL } from './constants'
 
-type FileType = 'background' | 'icon'
+type FileType = 'background' | 'icon';
+
+const warmCounts = {
+    'clear-day': 11,
+    'clear-night': 7,
+    'partly-cloud-day': 8,
+    'partly-cloud-night': 3,
+    'cloud-day': 3,
+    'cloud-night': 3,
+    'rain': 6,
+    'thunderstorm': 1,
+    'snow': 0,        // these shouldn't be possible
+    'wintry-mix': 0,
+    'mist': 1,
+    'error': 2,
+  };
+
+  const coldCounts = {
+    'clear-day': 6,
+    'clear-night': 7,
+    'partly-cloud-day': 6,
+    'partly-cloud-night': 3,
+    'cloud-day': 4,
+    'cloud-night': 1,
+    'rain': 6,
+    'thunderstorm': 1,
+    'snow': 4,
+    'wintry-mix': 2,
+    'mist': 1,
+    'error': 2,
+  };
 
 /** Pick best image for the provided weather type */
 async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): Promise<string> {
@@ -18,8 +48,7 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
   }
 
   let prefix = '';
-  let count = 1;
-
+  const countsMap = isWarm ? warmCounts : coldCounts;
 
   // todo: enhance with codes instead of icon
   switch (weatherType.icon) {
@@ -27,62 +56,51 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     // clear day
     case '01d':
       prefix = 'clear-day';
-      count = 11;
       break;
 
     // clear night
     case '01n':
       prefix = 'clear-night';
-      count = 7;
       break;
 
     // partly cloudy
     case '02d':
     case '03d':
       prefix = 'partly-cloud-day';
-      count = 8;
       break;
 
     //  partly cloudy night
     case '02n':
     case '03n':
       prefix = 'partly-cloud-night';
-      count = 3;
       break;
 
     // cloudy
     case '04d':
       prefix = 'cloud-day';
-      count = 3;
       break;
 
     // cloudy night
-    case '02n':
-    case '03n':
     case '04n':
       prefix = 'cloud-night';
-      count = 3;
       break;
 
     // rain-day
     case '09d':
     case '10d':
       prefix = 'rain';
-      count = 5;
       break;
 
     // rain-night
     case '09n':
     case '10n':
       prefix = 'rain';
-      count = 6;
       break;
 
     // thunderstorm
     case '11d':
     case '11n':
       prefix = 'thunderstorm';
-      count = 1;
       break;
 
     // snow
@@ -91,10 +109,8 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
       // weird case for freezing rain also having this icon
       if (weatherType.code===511 || weatherType.code===611) {
         prefix = 'wintry-mix';
-        count = 2;
       } else {
         prefix = 'snow';
-        count = 4;
       }
       break;
 
@@ -102,7 +118,6 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
     case '50d':
     case '50n':
       prefix = 'mist';
-      count = 1;
       break;
 
     // error or missing type
@@ -110,14 +125,15 @@ async function pickBestImage(weatherType: WeatherType, number, feelsLikeTemp): P
       log('Bad type provided!');
       log(weatherType);
       prefix = 'error';
-      count = 2;
       break;
   }
+
+  const count = countsMap[prefix];
 
   // randomize image
   const index = Math.floor(Math.random() * (count - 1) + 1);
   
-  const image = `${warmString}-${prefix}-${`${index}`.padStart(2, '0')}.jpg`;
+  const image = `${warmString}_${prefix}-${`${index}`.padStart(2, '0')}.jpg`;
 
   // cache and return
   saveImageSelection(cacheKey, image);

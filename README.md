@@ -10,8 +10,8 @@ On first run, it will request your location. This will then be saved in the cach
 * Add key as constant to `src/constants.ts`.
 
 ### Build
-* Install dependencies with `yarn`.
-* Run `yarn build`.
+* Install dependencies with `npm install`.
+* Run `npm run build`.
 * Build output will be created at `dist/main.js`. You will need to copy the contents in a bit.
 * Optional: modify `yarn copy` path to allow file transfer through icloud sync.
 
