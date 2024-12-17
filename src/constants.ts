@@ -1,4 +1,4 @@
-export const API_KEY = 'c76ef1e1eb326e8e0eb7a4bcd5469b4c';
+export const API_KEY = '';
 export const UNIT = 'imperial'; // can be "metric" or  "imperial"
 export const MIN_WARM_TEMP = 50; // should be a degree temp in same unit as above. this changes the selection of pictures
 
