@@ -5,33 +5,43 @@ import { MIN_WARM_TEMP, IMAGE_SOURCE_URL } from './constants'
 type FileType = 'background' | 'icon';
 
 const warmCounts = {
-    'clear-day': 11,
-    'clear-night': 7,
-    'partly-cloud-day': 8,
+    'clear-day': 6,
+    'clear-night': 3,
+    'partly-cloud-day': 5,
     'partly-cloud-night': 3,
-    'cloud-day': 3,
-    'cloud-night': 3,
-    'rain': 6,
-    'thunderstorm': 2,
-    'snow': 0,        // these shouldn't be possible
-    'wintry-mix': 0,
-    'mist': 1,
-    'error': 2,
+    'cloud-day': 4,
+    'cloud-night': 2,
+    'rain-day': 3,
+    'rain-night': 3,
+    'thunderstorm-day': 2,
+    'thunderstorm-night': 2,
+    'snow-day': 0, // this shouldn't be possible
+    'snow-night': 0,
+    'wintry-mix-day': 0,
+    'wintry-mix-night': 0,
+    'mist-day': 2,
+    'mist-night': 2,
+    'error': 1,
   };
 
   const coldCounts = {
-    'clear-day': 6,
-    'clear-night': 7,
-    'partly-cloud-day': 6,
-    'partly-cloud-night': 3,
-    'cloud-day': 5,
-    'cloud-night': 1,
-    'rain': 6,
-    'thunderstorm': 2,
-    'snow': 4,
-    'wintry-mix': 2,
-    'mist': 1,
-    'error': 2,
+    'clear-day': 4,
+    'clear-night': 4,
+    'partly-cloud-day': 4,
+    'partly-cloud-night': 2,
+    'cloud-day': 4,
+    'cloud-night': 2,
+    'rain-day': 1,
+    'rain-night': 3,
+    'thunderstorm-day': 1,
+    'thunderstorm-night': 1,
+    'snow-day': 4,
+    'snow-night': 3,
+    'wintry-mix-day': 2,
+    'wintry-mix-night': 2,
+    'mist-day': 2,
+    'mist-night': 2,
+    'error': 1,
   };
 
 /** Pick best image for the provided weather type */
@@ -88,36 +98,49 @@ async function pickBestImage(weatherType: WeatherType, feelsLikeTemp: number): P
     // rain-day
     case '09d':
     case '10d':
-      prefix = 'rain';
+      prefix = 'rain-day';
       break;
 
     // rain-night
     case '09n':
     case '10n':
-      prefix = 'rain';
+      prefix = 'rain-night';
       break;
 
     // thunderstorm
     case '11d':
+      prefix = 'thunderstorm-day';
+      break;
+
     case '11n':
-      prefix = 'thunderstorm';
+      prefix = 'thunderstorm-night';
       break;
 
     // snow
     case '13d':
+      // weird case for freezing rain also having this icon
+      if (weatherType.code===511 || weatherType.code===611) {
+        prefix = 'wintry-mix-day';
+      } else {
+        prefix = 'snow-day';
+      }
+      break;
+
     case '13n':
       // weird case for freezing rain also having this icon
       if (weatherType.code===511 || weatherType.code===611) {
-        prefix = 'wintry-mix';
+        prefix = 'wintry-mix-night';
       } else {
-        prefix = 'snow';
+        prefix = 'snow-night';
       }
       break;
 
     // mist
     case '50d':
+      prefix = 'mist-day';
+      break;
     case '50n':
-      prefix = 'mist';
+      prefix = 'mist-night';
       break;
 
     // error or missing type
