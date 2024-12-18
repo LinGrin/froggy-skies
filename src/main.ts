@@ -45,35 +45,40 @@ import { getWeatherData } from './weather';
   const dateText = widget.addText(`${format(new Date(), 'cccc d')}, ${weatherData.weather[0].main}`);
   dateText.textColor = textColor;
   dateText.font = Font.regularSystemFont(15);
-  dateText.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+  dateText.shadowOffset = new Point(1,1);
+  dateText.shadowRadius = 2; 
 
   // temperature
   log('3 - Temperature');
   const temperatureText = widget.addText(`${Math.round(weatherData.main.temp)}${degreeSymbol}`);
   temperatureText.textColor = textColor;
   temperatureText.font = Font.boldSystemFont(35);
-  temperatureText.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+  temperatureText.shadowOffset = new Point(1,1);
+  temperatureText.shadowRadius = 2; 
 
   // feels like
   log('4 - Feels like');
   const feelsLikeText = widget.addText(`Feels like ${Math.round(weatherData.main.feels_like)}${degreeSymbol}`);
   feelsLikeText.textColor = textColor;
   feelsLikeText.font = Font.regularSystemFont(15);
-  feelsLikeText.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+  feelsLikeText.shadowOffset = new Point(1,1);
+  feelsLikeText.shadowRadius = 2; 
 
   // city name
   log('5 - City name');
   const cityText = widget.addText(weatherData.name);
   cityText.textColor = textColor;
   cityText.font = Font.regularSystemFont(10);
-  cityText.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+  cityText.shadowOffset = new Point(1,1);
+  cityText.shadowRadius = 2; 
 
   // last updated
   log('6 - Last updated');
   const lastUpdatedText = widget.addText(`Updated ${format(new Date(), 'HH:mm')}`);
   lastUpdatedText.textColor = textColor;
   lastUpdatedText.font = Font.regularSystemFont(10);
-  lastUpdatedText.textShadow = "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000";
+  lastUpdatedText.shadowOffset = new Point(1,1);
+  lastUpdatedText.shadowRadius = 2; 
 
   widget.addSpacer();
 
