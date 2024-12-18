@@ -1,7 +1,7 @@
 # Froggy Skies (snargg edition)
 Weather widget for [Scriptable](https://scriptable.app) based off the Google weather frog but with Snargg from iready instead. Images are downloaded during sync from this repo and will be stored in your icloud account under `/scriptable/weather`. A primitive text cache will also be stored here.
 
-**DISCLAIMER** No this is in no way official iReady Snargg art or a project officially sanctioned by Curriculum Associates. I just really like Snargg as a character and enjoy making fanart. This for personal use only
+**DISCLAIMER** This is in NO way official iReady Snargg art or a project officially sanctioned by Curriculum Associates (or Google). I just really like Snargg as a character and enjoy making fanart. This for personal use only
 
 On first run, it will request your location. allow it just the once. This will then be saved in the cache as `location.json`. You can delete or change this file to update your location.
 
